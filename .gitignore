@@ -1,12 +1,25 @@
-*.class
+*#
+.#*
+*~
+/.gradle/
+build
+pom.xml
+.idea/
+/out/
+target/
+*.ipr
+*.iml
+*.iws
+.settings
+.classpath
+.project
+.springBeans
+vf.gf.*
+bin
+dist
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+dump.rdb
+.DS_Store
+tomcat.*
+activemq-data
+spring-shell.log
