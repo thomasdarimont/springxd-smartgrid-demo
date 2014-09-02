@@ -1,0 +1,22 @@
+#Ingestion Stream
+#Stores all incoming smartgrid events to a log / later HDFS
+stream create smartgrid_ingestion --definition "http | log" --deploy
+
+#Load event capture stream
+#taps Ingestion Stream
+#Captures only load events, generates hierarchical ids for the various levels
+stream create --name "smartgrid_load_event_capture" --definition "tap:stream:smartgrid_ingestion > filter --expression=#jsonPath(payload,'$.property')==1 | transform --script=smartgrid_event_transformer.groovy | log" --deploy
+
+#Load event aggregator stream
+#taps Load event capture stream
+#aggregates the load events for for every house and grid.
+stream create --name "smartgrid_load_event_aggregator" --definition "tap:stream:smartgrid_load_event_capture.transform  > script --location=smartgrid_event_aggregator.groovy | filter --expression=!payload.isEmpty() | splitter | after_splitter: log"  --deploy
+
+
+
+
+
+
+stream create smartgrid_ingestion --definition "http | log" --deploy
+stream create smartgrid_load_event_capture --definition "tap:stream:smartgrid_ingestion > filtered_load_events: filter --expression=#jsonPath(payload,'$.property')==1 | log" --deploy
+stream create smartgrid_load_timeseries --definition "tap:stream:smartgrid_load_event_capture.filtered_load_events > aggregate-counter --timeField=payload.timestamp_c.toString() --incrementExpression=payload.value.toString() --nameExpression='smartgrid_h_'+payload.house_id+'_load_actual'" --deploy
