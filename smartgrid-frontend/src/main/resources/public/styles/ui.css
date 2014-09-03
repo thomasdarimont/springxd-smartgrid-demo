@@ -122,3 +122,27 @@ footer .container {
 .icon-plugs {
     width: 30px;
 }
+
+#grid .bar .dropdown {
+  float:left;
+}
+
+#grid .legend {
+  text-align: center;
+  padding-left: 68px;
+  padding-top: 6px;
+}
+
+#grid .legend > span {
+  text-transform: uppercase;
+  font-size: 18px;
+  padding: 2px 40px;
+}
+
+#grid .legend .actual {
+  color: #1f77b4;
+}
+
+#grid .legend .prediction {
+  color: #ff7f0e;
+}
