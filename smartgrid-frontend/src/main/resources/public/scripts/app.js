@@ -2,10 +2,8 @@
 
 var appData = {
 
-    currentHouseSelection: 0
+    currentHouseSelection: -1
 
-    , minDate : new Date("2013-09-01T00:00:00.000Z")
-    , maxDate: new Date("2013-09-02T00:00:00.000Z")
     , requestTimeIncrementInMinutes: 5
     , gridKey : "h_-1"
 
