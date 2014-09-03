@@ -102,9 +102,12 @@ function createDataService() {
             var houseId = -1; //appData.currentHouseSelection;
             var request = createRequest(houseId, startDateTime, endDateTime, "MINUTE");
             request.success = function (data) {
-                onSuccess(data);
                 
-                window.setTimeout(sendDataRequest, pollingInterval);
+            	onSuccess(data);
+                
+                if(currentDate.getTime() < appData.maxDate.getTime() - 6 * oneMinute){
+                	window.setTimeout(sendDataRequest, pollingInterval);	
+                }
             };
 
             $.ajax(request);

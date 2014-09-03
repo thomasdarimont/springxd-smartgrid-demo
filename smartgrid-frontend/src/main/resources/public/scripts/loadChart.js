@@ -69,7 +69,7 @@ function createLoadChart() {
 
             var houseData = extractGridDataFrom(data);
 
-            var actual = houseData.timeSeries[0].data
+            var actual = houseData.timeSeries[0].data;
             actual.class = 'actual';
 
             var prediction = houseData.timeSeries[1].data;
@@ -82,7 +82,7 @@ function createLoadChart() {
 
             var valueMax = getMaxFromGivenLists(actual, prediction, function (d) {
                 return d.value;
-            })
+            });
 
             x.domain([tsMin, tsMax]);
             y.domain([0, valueMax]);
