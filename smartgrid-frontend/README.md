@@ -30,9 +30,32 @@ start xd-singlenode
 start xd-shell
 
 ```
-stream create smartgrid_frontend_test --definition "http | filter --expression=#jsonPath(payload,'$.property')==1 | aggregate-counter --nameExpression='smartgrid_h_'+payload.house_id+'_load_actual' --timeField=payload.timestamp_c.toString() --incrementExpression=payload.value.toString()" --deploy
+stream create smartgrid_ingestion --definition "http | log" --deploy
+
+stream create smartgrid_load_event_capture --definition "tap:stream:smartgrid_ingestion > filtered_load_events: filter --expression=#jsonPath(payload,'$.property')==1 | log" --deploy
+
+stream create smartgrid_load_timeseries_actual --definition "tap:stream:smartgrid_load_event_capture.filtered_load_events > aggregate-counter --timeField=payload.timestamp_c.toString() --incrementExpression=payload.value.toString() --nameExpression='smartgrid_h_'+payload.house_id+'_load_actual'" --deploy
+
+stream create smartgrid_load_timeseries_predicted --definition "tap:stream:smartgrid_load_event_capture.filtered_load_events > aggregate-counter --timeField=payload.timestamp_c.toString() --incrementExpression=(T(java.lang.Double).parseDouble(payload.value.toString())*1.05) --nameExpression='smartgrid_h_'+payload.house_id+'_load_predicted'" --deploy
 ```                           
-                          
+
+To speed up the ingestion one could replace the `log` sink with a `null` sink that looks like this:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration
+		http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+    <int:channel id="input"/>
+
+    <int:bridge input-channel="input" output-channel="nullChannel"/>
+</beans>
+``
+                        
 The aggregate-counters are named after the scheme:
 > 'smartgrid_h_'+payload.house_id+'_load_actual'
 > 'smartgrid_h_'+payload.house_id+'_load_predicted'
