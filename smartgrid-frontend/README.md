@@ -104,3 +104,5 @@ The frontend is available at http://localhost:8080
 You can customize the location of the Spring XD Aggregate Counter URL via 
 
 > -Dsmartgrid.frontend.aggregateCounterUrl=http://localhost:9393/metrics/aggregate-counters
+
+![Example-Screenshot-1](Example-Screenshot-1.png)
