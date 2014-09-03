@@ -24,7 +24,6 @@ function createLoadChart() {
             // Scales and axes. Note the inverted domain for the y-scale: bigger is up!
             x = d3.time.scale().range([0, width]);
             y = d3.scale.linear().range([height, 0]);
-//            xAxis = d3.svg.axis().scale(x).tickSize(-height).tickSubdivide(true);
             xAxis = d3.svg.axis().scale(x).ticks(6).tickFormat(d3.time.format("%H:%M"));
             yAxis = d3.svg.axis().scale(y).ticks(10).orient("left");
 
