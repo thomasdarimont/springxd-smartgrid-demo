@@ -16,7 +16,7 @@ https://drive.google.com/a/pivotal.io/file/d/0Bzyuv7p_xXJJcm92Zl9wTWFVWDQ/edit?u
 
 Format: id, timestamp, value, property, plug_id, household_id, house_id
 This file contains aggregated load measurements (property = 1) only.
-Data is aggregated by minute (sum of average load values by plug, household, house).
+Data is averaged by minute (average load values per plug, household, house).
 
 
 Stream definition
