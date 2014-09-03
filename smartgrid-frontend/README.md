@@ -5,6 +5,10 @@ The Smartgrid-Frontend is a Spring Boot app that hosts a D3.js visualization of 
 as well as the actual and predicted energy consumption by house. 
 It accesses data from aggregate-counters via the REST interface provided by Spring XD.
 
+Screenshot:
+![smartgird-ui](/smartgrid-frontend/smartgrid-ui.png)
+
+
 Preparation
 ------------
 Download agg_load_min_by_h_hh_p.csv: (90mb)
@@ -91,9 +95,6 @@ xd:>aggregate-counter display --name smartgrid_h_28_load_actual --from '2013-09-
   Sun Sep 01 02:00:00 CEST 2013                |  0
 ```
 
-SmartGrid-Frontend
-------------------
-
 To start the smartgrid-frontend app goto the springxd-smartgrid-demo/smartgrid-frontend directory and start the
 Spring boot app via:
 
@@ -104,6 +105,3 @@ The frontend is available at http://localhost:8080
 You can customize the location of the Spring XD Aggregate Counter URL via 
 
 > -Dsmartgrid.frontend.aggregateCounterUrl=http://localhost:9393/metrics/aggregate-counters
-
-Screenshot:
-![smartgird-ui](https://raw.githubusercontent.com/thomasdarimont/springxd-smartgrid-demo/develop/smartgrid-frontend/smartgrid-ui.png)
