@@ -105,4 +105,5 @@ You can customize the location of the Spring XD Aggregate Counter URL via
 
 > -Dsmartgrid.frontend.aggregateCounterUrl=http://localhost:9393/metrics/aggregate-counters
 
-![Example-Screenshot-1](Example-Screenshot-1.png)
+Screenshot:
+![smartgird-ui](https://raw.githubusercontent.com/thomasdarimont/springxd-smartgrid-demo/develop/smartgrid-frontend/smartgrid-ui.png)
