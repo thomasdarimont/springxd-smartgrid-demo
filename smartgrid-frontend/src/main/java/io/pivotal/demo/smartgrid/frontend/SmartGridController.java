@@ -5,6 +5,8 @@ import java.util.Map;
 import io.pivotal.demo.smartgrid.frontend.timeseries.DataPointResolution;
 import io.pivotal.demo.smartgrid.frontend.timeseries.TimeSeriesCollection;
 import io.pivotal.demo.smartgrid.frontend.timeseries.TimeSeriesRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class SmartGridController {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SmartGridController.class);
 
 	private final TimeSeriesRepository timeSeriesRepository;
 
@@ -31,19 +35,20 @@ public class SmartGridController {
 			@RequestParam(value = "resolution",defaultValue = "MINUTE") DataPointResolution resolution
 			) {
 
-		DataRequest dr = new DataRequest();
-		dr.setHouseId(houseId);
-		dr.setFromDateTime(fromDateTime);
-		dr.setToDateTime(toDateTime);
-		dr.setResolution(resolution);
+		DataRequest dataRequest = new DataRequest();
+		dataRequest.setHouseId(houseId);
+		dataRequest.setFromDateTime(fromDateTime);
+		dataRequest.setToDateTime(toDateTime);
+		dataRequest.setResolution(resolution);
 
-		return timeSeriesRepository.getTimeSeriesData(dr);
+		return timeSeriesRepository.getTimeSeriesData(dataRequest);
 	}
 
 	@RequestMapping("/dump")
 	public String dump() {
 
-		System.out.println(getDataSet(-1,"2013-09-01T00:00:00.000Z", "2013-09-02T00:00:00.000Z", DataPointResolution.MINUTE));
+		Map<String, TimeSeriesCollection> dataSet = getDataSet(TimeSeriesRepository.GRID_HOUSE_ID, TimeSeriesRepository.DATE_RANGE_DATETIME_MIN, TimeSeriesRepository.DATA_RANGE_DATETIME_MAX, DataPointResolution.MINUTE);
+		LOG.info("DataSet: " + dataSet);
 
 		return "ok";
 	}

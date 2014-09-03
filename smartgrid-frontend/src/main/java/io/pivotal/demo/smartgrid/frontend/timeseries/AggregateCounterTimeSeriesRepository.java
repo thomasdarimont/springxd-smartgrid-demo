@@ -26,20 +26,19 @@ public class AggregateCounterTimeSeriesRepository implements TimeSeriesRepositor
 
 	private final RestTemplate restTemplate = new RestTemplate();
 
-	@Value("${smartgrid.frontend.aggregateCounterUrl}")
+    @Value("${smartgrid.frontend.aggregateCounterUrl}")
 	private String aggregateCounterUrl = AGGREGATE_COUNTER_URL;
 
 	@Override
 	public Map<String, TimeSeriesCollection> getTimeSeriesData(DataRequest dataRequest) {
 
-		Map<String, TimeSeriesCollection> result = new HashMap<>();
+		int houseId = dataRequest.getHouseId();
 
-		int houseNum = dataRequest.getHouseId();
-
-		IntStream houseNumStream = houseNum == -1 ? IntStream.range(0, 40) : IntStream.of(houseNum);
+		IntStream houseNumStream = houseId == GRID_HOUSE_ID ? IntStream.rangeClosed(HOUSE_ID_MIN, HOUSE_ID_MAX) : IntStream.of(houseId);
 
 		List<AggregateCounterCollection> aggregateCounterCollections = houseNumStream.parallel().mapToObj(i -> new DataRequest(dataRequest, i)).map(this::fetchAggregateCounterData).filter(acc -> acc != null && !acc.getAggregateCounters().isEmpty()).collect(Collectors.toList());
 
+		Map<String, TimeSeriesCollection> result = new HashMap<>();
 		for (AggregateCounterCollection acc : aggregateCounterCollections) {
 
 			TimeSeriesCollection tsc = convertToTimeSeriesCollection(acc);
@@ -79,7 +78,7 @@ public class AggregateCounterTimeSeriesRepository implements TimeSeriesRepositor
 
 	private String makeAggregateCounterUrl(TimeSeriesType timeSeriesType, DataRequest dataRequest) {
 
-		String aggregateCounterUrl = AGGREGATE_COUNTER_URL + "/smartgrid_"+getHouseId(dataRequest.getHouseId()) + "_load_" + timeSeriesType.name().toLowerCase();
+		String aggregateCounterUrl = AGGREGATE_COUNTER_URL + "/smartgrid_"+ makeHouseKey(dataRequest.getHouseId()) + "_load_" + timeSeriesType.name().toLowerCase();
 
 		UriComponentsBuilder ucb = UriComponentsBuilder.fromHttpUrl(aggregateCounterUrl)
 				.queryParam("resolution", dataRequest.getResolution().name().toLowerCase())
@@ -92,10 +91,9 @@ public class AggregateCounterTimeSeriesRepository implements TimeSeriesRepositor
 	}
 
 
-	public AggregateCounterCollection fetchAggregateCounterData(DataRequest request) {
+	private AggregateCounterCollection fetchAggregateCounterData(DataRequest request) {
 
-		int houseNum = request.getHouseId();
-		AggregateCounterCollection acc = new AggregateCounterCollection(getHouseId(houseNum));
+		AggregateCounterCollection acc = new AggregateCounterCollection(makeHouseKey(request.getHouseId()));
 
 		try {
 			AggregateCounter ac = restTemplate.getForObject(makeAggregateCounterUrl(TimeSeriesType.ACTUAL, request), AggregateCounter.class);
@@ -118,7 +116,15 @@ public class AggregateCounterTimeSeriesRepository implements TimeSeriesRepositor
 		return acc;
 	}
 
-	private String getHouseId(int houseNum) {
-		return "h_" + houseNum;
+	private String makeHouseKey(int houseId) {
+		return "h_" + houseId;
+	}
+
+	public String getAggregateCounterUrl() {
+		return aggregateCounterUrl;
+	}
+
+	public void setAggregateCounterUrl(String aggregateCounterUrl) {
+		this.aggregateCounterUrl = aggregateCounterUrl;
 	}
 }
