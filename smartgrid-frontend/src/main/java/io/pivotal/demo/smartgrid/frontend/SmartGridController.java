@@ -35,13 +35,19 @@ public class SmartGridController {
 			@RequestParam(value = "resolution",defaultValue = "MINUTE") DataPointResolution resolution
 			) {
 
-		DataRequest dataRequest = new DataRequest();
+		TimeSeriesDataRequest dataRequest = new TimeSeriesDataRequest();
 		dataRequest.setHouseId(houseId);
 		dataRequest.setFromDateTime(fromDateTime);
 		dataRequest.setToDateTime(toDateTime);
 		dataRequest.setResolution(resolution);
 
-		return timeSeriesRepository.getTimeSeriesData(dataRequest);
+		LOG.info("Received request {}", dataRequest);
+
+		Map<String, TimeSeriesCollection> timeSeriesData = timeSeriesRepository.getTimeSeriesData(dataRequest);
+
+		LOG.info("Returning data {} -> Records: {}", dataRequest, timeSeriesData.size());
+
+		return timeSeriesData;
 	}
 
 	@RequestMapping("/dump")

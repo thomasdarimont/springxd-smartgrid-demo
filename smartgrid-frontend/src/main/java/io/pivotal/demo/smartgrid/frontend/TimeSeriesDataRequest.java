@@ -2,16 +2,17 @@ package io.pivotal.demo.smartgrid.frontend;
 
 import io.pivotal.demo.smartgrid.frontend.timeseries.DataPointResolution;
 
-public class DataRequest {
+public class TimeSeriesDataRequest {
 
 	private int houseId;
 	private String fromDateTime;
 	private String toDateTime;
 	private DataPointResolution resolution;
 
-	public DataRequest(){}
+	public TimeSeriesDataRequest(){}
 
-	public DataRequest(DataRequest dataRequest, int houseId){
+	public TimeSeriesDataRequest(TimeSeriesDataRequest dataRequest, int houseId){
+
 		this.houseId = houseId;
 		this.fromDateTime = dataRequest.getFromDateTime();
 		this.toDateTime = dataRequest.getToDateTime();
@@ -48,5 +49,15 @@ public class DataRequest {
 
 	public void setResolution(DataPointResolution resolution) {
 		this.resolution = resolution;
+	}
+
+	@Override
+	public String toString() {
+		return "TimeSeriesDataRequest{" +
+				"houseId=" + houseId +
+				", fromDateTime='" + fromDateTime + '\'' +
+				", toDateTime='" + toDateTime + '\'' +
+				", resolution=" + resolution +
+				'}';
 	}
 }

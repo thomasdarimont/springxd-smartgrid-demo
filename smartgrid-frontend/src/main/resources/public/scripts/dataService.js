@@ -15,6 +15,19 @@ function createDataService() {
         var baseUrl = "./data";
 
         var houseDataCache = {};
+        houseDataCache[appData.gridKey] = {
+            name : 'grid'
+            , timeSeries : [
+                {
+                    name : "grid_load_actual"
+                    , data : []
+                }
+                , {
+                    name : "grid_load_predicted"
+                    , data : []
+                }
+            ]
+        };
 
         var actualTimeSeriesIdx = 0;
         var predictionTimeSeriesIdx = 1;
@@ -46,13 +59,13 @@ function createDataService() {
 
         function onSuccess(data) {
 
+            var gridData = houseDataCache[appData.gridKey];
+
             for (var houseId in data) {
 
                 if (!houseId) {
                     continue;
                 }
-
-                var currentHouseData = houseDataCache[houseId];
 
                 var newHouseData = data[houseId];
 
@@ -62,11 +75,11 @@ function createDataService() {
                 var newPredictionDataPoints = newHouseData.timeSeries[predictionTimeSeriesIdx].data;
                 newPredictionDataPoints.map(translateEpochTimestampToMillis);
 
+                var currentHouseData = houseDataCache[houseId];
                 if (!currentHouseData) {
                     houseDataCache[houseId] = newHouseData;
                     currentHouseData = newHouseData;
                 } else {
-
                     var currentActualTimeSeries = currentHouseData.timeSeries[actualTimeSeriesIdx];
                     currentActualTimeSeries.data = currentActualTimeSeries.data.concat(newActualDataPoints);
                     var currentPredictionTimeSeries = currentHouseData.timeSeries[predictionTimeSeriesIdx];
@@ -79,25 +92,26 @@ function createDataService() {
                 observer.onDataArrived(houseDataCache);
             }
         }
+        
+        function sendDataRequest(){
+            
+        	var startDateTime = currentDate;
+            var endDateTime = new Date(currentDate.getTime() + appData.requestTimeIncrementInMinutes * oneMinute);
+            currentDate = endDateTime;
+
+            var houseId = -1; //appData.currentHouseSelection;
+            var request = createRequest(houseId, startDateTime, endDateTime, "MINUTE");
+            request.success = function (data) {
+                onSuccess(data);
+                
+                window.setTimeout(sendDataRequest, pollingInterval);
+            };
+
+            $.ajax(request);
+        }
 
         DataService.prototype.start = function () {
-
-            pollingHandler = window.setInterval(function () {
-
-                var startDateTime = currentDate;
-                var endDateTime = new Date(currentDate.getTime() + appData.requestTimeIncrementInMinutes * oneMinute);
-                currentDate = endDateTime;
-
-                var houseId = -1; //appData.currentHouseSelection;
-                var request = createRequest(houseId, startDateTime, endDateTime, "MINUTE");
-                request.success = function (data) {
-                    onSuccess(data);
-                };
-
-                $.ajax(request);
-
-            }, pollingInterval);
-
+            window.setTimeout(sendDataRequest, pollingInterval);
         };
     };
 

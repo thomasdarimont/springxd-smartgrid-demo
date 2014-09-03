@@ -13,9 +13,15 @@ public class TimeSeries implements Serializable {
 
 	private final String name;
 	private List<DataPoint> data;
+	
+	public TimeSeries(String name, List<DataPoint> dataPoints) {
+		
+		this.name = name;
+		this.data = dataPoints;
+	}
 
 	public TimeSeries(String name, List<String> timeAxis, List<String> values) {
-
+		
 		this.name = name;
 		this.data = buildDataPoints(timeAxis, values);
 	}

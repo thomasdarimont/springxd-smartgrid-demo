@@ -77,13 +77,17 @@ function createLoadDistributionChart() {
         LoadDistributionChart.prototype.onDataArrived = function (data) {
 
             var dataSet = [];
-            for (var property in data) {
+            for (var houseKey in data) {
 
-                var houseId = property.split('_')[1];
+                if(houseKey === appData.gridKey){
+                    continue;
+                }
+
+                var houseId = houseKey.split('_')[1];
 
                 if (parseInt(houseId) >= 0) {
 
-                    var actualLoadTimeSeries = data[property].timeSeries[0];
+                    var actualLoadTimeSeries = data[houseKey].timeSeries[0];
 
                     var item = {
                         label: 'House ' + houseId,

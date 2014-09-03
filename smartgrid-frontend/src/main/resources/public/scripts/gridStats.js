@@ -6,17 +6,12 @@ function createGridStats(){
         GridStats.prototype.onDataArrived = function (data) {
 
             var totalLoad = 0;
-            for(var property in data){
+            var gridData = data[appData.gridKey];
+            var dataPoints = gridData.timeSeries[0].data;
 
-                var houseData = data[property];
-                var dataPoints = houseData.timeSeries[0].data;
+            var lastDataPoint = dataPoints[dataPoints.length-1];
 
-                var lastDataPoint = dataPoints[dataPoints.length-1];
-
-                totalLoad += lastDataPoint.value;
-            }
-
-            totalLoad *= 0.25;
+            totalLoad += lastDataPoint.value;
 
             $(".kpi-total-load").text(Math.round(totalLoad));
         };

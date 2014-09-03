@@ -9,8 +9,8 @@ public class DataPoint implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final long ts;
-	private final double value;
+	private long ts;
+	private double value;
 
 	public DataPoint(long ts, double value) {
 		this.ts = ts;
@@ -21,7 +21,15 @@ public class DataPoint implements Serializable {
 		return ts;
 	}
 
+	public void setTs(long ts) {
+		this.ts = ts;
+	}
+
 	public double getValue() {
 		return value;
+	}
+
+	public void setValue(double value) {
+		this.value = value;
 	}
 }

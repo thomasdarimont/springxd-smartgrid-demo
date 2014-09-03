@@ -1,15 +1,16 @@
-//new Date("2013-09-01T00:00:00.000Z")
+//
 
 var appData = {
 
     currentHouseSelection: 0
 
-    , minDate :
-        new Date("2013-08-31T22:00:00.000Z")
+    , minDate : new Date("2013-09-01T00:00:00.000Z")
     , maxDate: new Date("2013-09-02T00:00:00.000Z")
-    , requestTimeIncrementInMinutes: 2
+    , requestTimeIncrementInMinutes: 5
+    , gridKey : "h_-1"
 
     , houses: [
+        {"house_id": -1, "households": 343, "plugs": 2125},
         {"house_id": 0, "households": 14, "plugs": 14},
         {"house_id": 1, "households": 3, "plugs": 7},
         {"house_id": 2, "households": 6, "plugs": 13},
@@ -73,6 +74,11 @@ function initUi() {
     }
 
     function getHouseCaption(houseId) {
+
+        if(houseId == -1){
+            return "Grid";
+        }
+
         return "House " + houseId;
     }
 

@@ -51,9 +51,7 @@ function createLoadChart() {
         }
 
         function extractGridDataFrom(data) {
-
-            var houseNum = appData.currentHouseSelection == -1 ? 0 : appData.currentHouseSelection;
-            return data["h_" + houseNum];
+            return data["h_" + appData.currentHouseSelection];
         }
 
         function getMaxFromGivenLists(listA, listB, extractor) {
