@@ -58,7 +58,7 @@ To speed up the ingestion one could replace the `log` sink with a `null` sink th
 
     <int:bridge input-channel="input" output-channel="nullChannel"/>
 </beans>
-``
+```
                         
 The aggregate-counters are named after the scheme:
 > 'smartgrid_h_'+payload.house_id+'_load_actual'
